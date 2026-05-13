@@ -19,6 +19,7 @@ jobs:
       - name: Build project
         run: |
           cd linux_app
+          rm -rf build
           mkdir build
           cd build
           cmake ..
