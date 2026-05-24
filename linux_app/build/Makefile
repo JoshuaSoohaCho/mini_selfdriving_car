@@ -128,6 +128,32 @@ car/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\car.dir\build.make CMakeFiles/car.dir/build
 .PHONY : car/fast
 
+#=============================================================================
+# Target rules for targets named sensor_node
+
+# Build rule for target.
+sensor_node: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 sensor_node
+.PHONY : sensor_node
+
+# fast build rule for target.
+sensor_node/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\sensor_node.dir\build.make CMakeFiles/sensor_node.dir/build
+.PHONY : sensor_node/fast
+
+#=============================================================================
+# Target rules for targets named motor_node
+
+# Build rule for target.
+motor_node: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 motor_node
+.PHONY : motor_node
+
+# fast build rule for target.
+motor_node/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\motor_node.dir\build.make CMakeFiles/motor_node.dir/build
+.PHONY : motor_node/fast
+
 main.obj: main.c.obj
 .PHONY : main.obj
 
@@ -152,6 +178,54 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\car.dir\build.make CMakeFiles/car.dir/main.c.s
 .PHONY : main.c.s
 
+motor_node.obj: motor_node.c.obj
+.PHONY : motor_node.obj
+
+# target to build an object file
+motor_node.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\motor_node.dir\build.make CMakeFiles/motor_node.dir/motor_node.c.obj
+.PHONY : motor_node.c.obj
+
+motor_node.i: motor_node.c.i
+.PHONY : motor_node.i
+
+# target to preprocess a source file
+motor_node.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\motor_node.dir\build.make CMakeFiles/motor_node.dir/motor_node.c.i
+.PHONY : motor_node.c.i
+
+motor_node.s: motor_node.c.s
+.PHONY : motor_node.s
+
+# target to generate assembly for a file
+motor_node.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\motor_node.dir\build.make CMakeFiles/motor_node.dir/motor_node.c.s
+.PHONY : motor_node.c.s
+
+sensor_node.obj: sensor_node.c.obj
+.PHONY : sensor_node.obj
+
+# target to build an object file
+sensor_node.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\sensor_node.dir\build.make CMakeFiles/sensor_node.dir/sensor_node.c.obj
+.PHONY : sensor_node.c.obj
+
+sensor_node.i: sensor_node.c.i
+.PHONY : sensor_node.i
+
+# target to preprocess a source file
+sensor_node.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\sensor_node.dir\build.make CMakeFiles/sensor_node.dir/sensor_node.c.i
+.PHONY : sensor_node.c.i
+
+sensor_node.s: sensor_node.c.s
+.PHONY : sensor_node.s
+
+# target to generate assembly for a file
+sensor_node.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\sensor_node.dir\build.make CMakeFiles/sensor_node.dir/sensor_node.c.s
+.PHONY : sensor_node.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -161,9 +235,17 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... car
+	@echo ... motor_node
+	@echo ... sensor_node
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... motor_node.obj
+	@echo ... motor_node.i
+	@echo ... motor_node.s
+	@echo ... sensor_node.obj
+	@echo ... sensor_node.i
+	@echo ... sensor_node.s
 .PHONY : help
 
 

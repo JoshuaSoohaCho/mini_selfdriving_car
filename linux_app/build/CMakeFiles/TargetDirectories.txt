@@ -1,3 +1,5 @@
 C:/Users/joshu/mini_selfdriving_car/linux_app/build/CMakeFiles/car.dir
+C:/Users/joshu/mini_selfdriving_car/linux_app/build/CMakeFiles/sensor_node.dir
+C:/Users/joshu/mini_selfdriving_car/linux_app/build/CMakeFiles/motor_node.dir
 C:/Users/joshu/mini_selfdriving_car/linux_app/build/CMakeFiles/edit_cache.dir
 C:/Users/joshu/mini_selfdriving_car/linux_app/build/CMakeFiles/rebuild_cache.dir
