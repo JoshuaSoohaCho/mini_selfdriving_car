@@ -1,13 +1,13 @@
 /*
  * uart_enable.c
- *
+ * For STM32F4 Discovery Board
  *  Created on: May 27, 2026
  *      Author: joshu
  */
 
 
 
-#include "uart_enable.h"
+#include <uart_enable.h>
 
 
 void uart2_tx_init(void){
@@ -31,7 +31,7 @@ void uart2_tx_init(void){
 	uart_set_baudrate(USART2, APB1_CLK, UART_BAUDRATE);
 
 	/* Configure transfer direction */
-	USART2->CR1 |= CR1_TE;
+	USART2->CR1 = CR1_TE;
 
 	/* Enable the USART2 Transmitter */
 	USART2->CR1 |= CR1_UE;
@@ -65,7 +65,7 @@ int main(){
 	uart2_tx_init();
 
 	while(1){
-		printf("Hello World!\n");
+		printf("Hello World!\n\r");
 		for(int i = 0; i < 100000; i++){}
 	}
 }

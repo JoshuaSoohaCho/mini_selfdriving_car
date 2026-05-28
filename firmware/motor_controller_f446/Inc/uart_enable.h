@@ -1,6 +1,6 @@
 /*
  * uart_enable.h
- *
+ * For enabling STM32F4 Discovery Board
  *  Created on: May 27, 2026
  *      Author: joshu
  */
