@@ -7,8 +7,6 @@
 
 #include <uart_enable_l475.h>
 
-
-
 void uart1_write(int ch) {
 	/* Make sure transmit data register is empty */
 	while (!(USART1->ISR & ISR_TXE));
@@ -56,13 +54,3 @@ void uart1_tx_init(void) {
 static uint16_t compute_uart_div(uint32_t periph_clk, uint32_t baudrate) {	return ((periph_clk + (baudrate / 2U)) / baudrate);}
 
 static void uart_set_baudrate(USART_TypeDef *USARTx, uint32_t periph_clk, uint32_t baudrate) {	USARTx->BRR = compute_uart_div(periph_clk, baudrate);}
-
-int main() {
-	uart1_tx_init();
-
-	while(1){
-		printf("Hello World!\n\r");
-		for(int i = 0; i < 100000; i++){}
-	}
-}
-

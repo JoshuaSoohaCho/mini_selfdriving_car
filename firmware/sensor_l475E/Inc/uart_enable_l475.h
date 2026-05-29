@@ -17,7 +17,7 @@
 #define GPIOBEN 					(1U<<1)
 #define UART1EN						(1U<<14)
 
-#define SYS_FREQ 					4000000
+#define SYS_FREQ 					4000000 // 4 MHz
 #define APB2_CLK					SYS_FREQ
 #define UART_BAUDRATE				115200
 

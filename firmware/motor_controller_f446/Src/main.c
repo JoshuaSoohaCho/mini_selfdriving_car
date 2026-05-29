@@ -15,6 +15,23 @@
  *
  ******************************************************************************
  */
+#include "main.h"
+
+int main() {
+
+	uart1_tx_init();
+	printf("[INIT] SYSTEM STARTED\n\r");
+
+	while(1){
+		printf("[LOOP] RUNNING...\n\r");
+		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+	}
+}
 
 
+void delay(volatile int count) {
+    while (count--) {
+        __asm__("nop");
+    }
+}
 

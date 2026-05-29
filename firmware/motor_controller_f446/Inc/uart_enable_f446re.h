@@ -5,8 +5,8 @@
  *      Author: joshu
  */
 
-#ifndef UART_ENABLE_H_
-#define UART_ENABLE_H_
+#ifndef UART_ENABLE_F446RE_H_
+#define UART_ENABLE_F446RE_H_
 
 /* INCLUDES: */
 #include <stdint.h>
@@ -39,4 +39,4 @@ int __io_putchar(int ch);
 
 
 
-#endif /* UART_ENABLE_H_ */
+#endif /* UART_ENABLE_F446RE_H_ */
