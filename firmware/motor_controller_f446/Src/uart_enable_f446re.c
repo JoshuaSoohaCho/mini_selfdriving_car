@@ -7,7 +7,7 @@
 
 
 
-#include <uart_enable_f446re.h>
+#include "uart_enable_f446re.h"
 
 
 void uart2_tx_init(void){
@@ -59,14 +59,4 @@ int __io_putchar(int ch){
 	return ch;
 }
 
-
-
-int main(){
-	uart2_tx_init();
-
-	while(1){
-		printf("Hello World!\n\r");
-		for(int i = 0; i < 100000; i++){}
-	}
-}
 

@@ -22,19 +22,46 @@
 
 #include "main.h"
 
+int compute_speed(int distance) // example function
+{
+    if (distance < 20)
+    {
+        return 0;   // stop
+    }
+    else if (distance < 50)
+    {
+        return 40;  // slow
+    }
+    else
+    {
+        return 80;  // fast
+    }
+}
 
 int main() {
 
-	uart1_tx_init();
+	uart2_tx_init();
 	printf("[INIT] SYSTEM STARTED\n\r");
+
+	int test_distance = 40;
 
 //	while(1){
 //		printf("[LOOP] RUNNING...\n\r");
 //		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
 //	}
-//	while(1){
-//		DEBUG_PRINT("[SENSOR ]")
-//	}
+	while(1){
+		int speed = compute_speed(test_distance);
+
+		DEBUG_PRINT("[MOTOR] Distance: %d, Speed: %d\r\n", test_distance, speed);
+
+		test_distance -= 5;
+
+		if (test_distance < 0) {
+			test_distance = 100; // Reset distance for demonstration
+		}
+
+		delay(500000);
+	}
 }
 
 
