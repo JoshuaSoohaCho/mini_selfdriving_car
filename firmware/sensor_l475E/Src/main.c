@@ -15,6 +15,11 @@
  *
  ******************************************************************************
  */
+// L475 Microcontroller Main Program
+
+
+
+
 #include "main.h"
 
 int main() {
@@ -22,9 +27,20 @@ int main() {
 	uart1_tx_init();
 	printf("[INIT] SYSTEM STARTED\n\r");
 
+	int distance = 100;
+
 	while(1){
-		printf("[LOOP] RUNNING...\n\r");
-		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+//		printf("[LOOP] RUNNING...\n\r");
+//		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+		DEBUG_PRINT("[SENSOR] Distance: %d\r\n", distance);
+
+		distance -= 10;
+
+		if (distance < 0) {
+			distance = 100; // Reset distance for demonstration
+		}
+
+		delay(500000);
 	}
 }
 
