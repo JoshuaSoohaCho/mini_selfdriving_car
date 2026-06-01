@@ -1,5 +1,5 @@
 /*
- * uart_enable.c
+ * uart_enable_f446re.c
  * For STM32F4 Discovery Board
  *  Created on: May 27, 2026
  *      Author: joshu
@@ -11,8 +11,8 @@
 
 
 void uart2_tx_init(void){
-	/* Enable Clock Access to GPIO_A */
-	RCC->AHB1ENR |= GPIOAEN;
+//	/* Enable Clock Access to GPIO_A */
+//	RCC->AHB1ENR |= GPIOAEN;
 
 	/* PA2 AF Mode */
 	GPIOA->MODER &= ~(1U << 4);

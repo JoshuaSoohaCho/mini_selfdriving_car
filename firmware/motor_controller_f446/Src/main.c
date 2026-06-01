@@ -39,7 +39,7 @@ int compute_speed(int distance) // example function
 }
 
 int main() {
-
+	init_GPIOA_clock();
 	uart2_tx_init();
 	printf("[INIT] SYSTEM STARTED\n\r");
 

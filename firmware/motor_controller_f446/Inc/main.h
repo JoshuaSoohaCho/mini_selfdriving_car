@@ -11,6 +11,8 @@
 
 /* Include necessary headers */
 #include "uart_enable_f446re.h"
+#include "CAN_f446re.h"
+#include "init_f446re.h"
 #include <stdio.h>
 
 
