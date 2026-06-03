@@ -1,20 +1,18 @@
 /*
- * CAN_f446re.c
+ * CAN_l475.c
  *
- *  Created on: May 31, 2026
+ *  Created on: Jun 2, 2026
  *      Author: joshu
  */
 
-#include "CAN_f446re.h"
-
-
+#include "CAN_l475.h"
 
 void CAN_init(void) {
 	// Enable clock for CAN peripheral
-	RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
+	RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
 
-//	// Configure CAN pins (e.g., PA11 for RX, PA12 for TX)
-//	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable clock for GPIOA
+	// Configure CAN pins (e.g., PA11 for RX, PA12 for TX)
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN; // Enable clock for GPIOA
 
 	// Set PA11 and PA12 to alternate function mode
 	GPIOA->MODER &= ~(1 << 22);
@@ -22,9 +20,6 @@ void CAN_init(void) {
 
 	GPIOA->MODER &= ~(1 << 24);
 	GPIOA->MODER |= (1 << 25);
-
-//	GPIOA->MODER &= ~((3U << (11 * 2)) | (3U << (12 * 2))); // Clear mode bits
-//	GPIOA->MODER |= ((2U << (11 * 2)) | (2U << (12 * 2))); // Set to AF mode
 
 	// Set alternate function to AF9 for CAN
 	// PIN 11
@@ -39,9 +34,6 @@ void CAN_init(void) {
 	GPIOA->AFR[1] &= ~(1 << 18);
 	GPIOA->AFR[1] |= (1 << 19);
 
-
-//	GPIOA->AFR[1] |= (9U << ((11 - 8) * 4)) | (9U << ((12 - 8) * 4)); // AF9 for CAN
-
 	// Additional CAN configuration would go here (e.g., bit timing, filters)
 	CAN1->MCR |= CAN_INRQ; // Enter initialization mode
 
@@ -50,23 +42,9 @@ void CAN_init(void) {
 	CAN1->MCR &= ~CAN_INRQ; // Exit initialization mode
 	while (CAN1->MSR & CAN_INRQ); // Wait until initialization mode is exited
 
-
 	CAN1->FMR |= (CAN_FMR_FINIT); // Enter filter initialization mode
 
 	CAN1->FA1R &= ~(CAM1_FA1R_FACT0); // Deactivate filter 0
 
 	CAN1->FMR &= ~(CAN_FMR_FINIT); // Exit filter initialization mode
-}
-
-
-void CAN_send(uint8_t data) {
-	while (!(CAN1->TSR & (1U << 26))); // Wait until a transmit mailbox is empty
-
-	CAN1->sTxMailBox[0].TIR = (0x100 << 21); // Standard ID (0x100)
-
-	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
-
-	CAN1->sTxMailBox[0].TDLR = data; // Load data into the mailbox
-
-	CAN1->sTxMailBox[0].TIR |= (1U << 0); // Request transmission
 }
