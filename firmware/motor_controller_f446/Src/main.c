@@ -48,20 +48,31 @@ int main() {
 //		printf("[LOOP] RUNNING...\n\r");
 //		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
 //	}
-	uint8_t distance = 100;
+//	uint8_t distance = 100;
+
+//	while (1)
+//	{
+//	    can_send(distance);
+//
+//	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
+//
+//	    distance--;
+//
+//	    if (distance == 0)
+//	        distance = 100;
+//
+//	    delay(500000);
+//	}
 
 	while (1)
 	{
-	    can_send(distance);
+	    uint8_t distance = CAN_receive();
 
-	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
+	    DEBUG_PRINT("[MOTOR] Received: %d\r\n", distance);
 
-	    distance--;
+	    int speed = compute_speed(distance);
 
-	    if (distance == 0)
-	        distance = 100;
-
-	    delay(500000);
+	    DEBUG_PRINT("[MOTOR] Speed: %d\r\n", speed);
 	}
 }
 

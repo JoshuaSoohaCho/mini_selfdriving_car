@@ -29,18 +29,33 @@ int main() {
 
 	int distance = 100;
 
-	while(1){
-//		printf("[LOOP] RUNNING...\n\r");
-//		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
-		DEBUG_PRINT("[SENSOR] Distance: %d\r\n", distance);
+//	while(1){
+////		printf("[LOOP] RUNNING...\n\r");
+////		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+//		DEBUG_PRINT("[SENSOR] Distance: %d\r\n", distance);
+//
+//		distance -= 10;
+//
+//		if (distance < 0) {
+//			distance = 100; // Reset distance for demonstration
+//		}
+//
+//		delay(500000);
+//	}
+	uint8_t distance = 100;
 
-		distance -= 10;
+	while (1)
+	{
+	    can_send(distance);
 
-		if (distance < 0) {
-			distance = 100; // Reset distance for demonstration
-		}
+	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
 
-		delay(500000);
+	    distance--;
+
+	    if (distance == 0)
+	        distance = 100;
+
+	    delay(500000);
 	}
 }
 

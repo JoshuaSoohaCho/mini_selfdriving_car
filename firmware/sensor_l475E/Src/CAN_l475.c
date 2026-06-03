@@ -48,3 +48,16 @@ void CAN_init(void) {
 
 	CAN1->FMR &= ~(CAN_FMR_FINIT); // Exit filter initialization mode
 }
+
+
+void CAN_send(uint8_t data) {
+	while (!(CAN1->TSR & (1U << 26))); // Wait until a transmit mailbox is empty
+
+	CAN1->sTxMailBox[0].TIR = (0x100 << 21); // Standard ID (0x100)
+
+	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
+
+	CAN1->sTxMailBox[0].TDLR = data; // Load data into the mailbox
+
+	CAN1->sTxMailBox[0].TIR |= (1U << 0); // Request transmission
+}

@@ -4,6 +4,7 @@
  *  Created on: May 31, 2026
  *      Author: joshu
  */
+#include "init_f446re.h"
 
 // Initialize Clock access to GPIOA
 void init_GPIOA_clock(void) {

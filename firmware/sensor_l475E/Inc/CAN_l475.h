@@ -22,7 +22,9 @@
 #define CAM1_FA1R_FACT0				(1U << 0)  // Filter 0 activation bit
 
 
-
+/* Function prototypes */
+void CAN_init(void);
+void CAN_send(uint8_t data);
 
 
 #endif /* CAN_L475_H_ */
