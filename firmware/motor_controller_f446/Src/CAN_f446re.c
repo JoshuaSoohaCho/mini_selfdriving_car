@@ -51,17 +51,46 @@ void CAN_init(void) {
 	while (CAN1->MSR & CAN_INRQ); // Wait until initialization mode is exited
 
 
-	CAN1->FMR |= (FINIT); // Enter filter initialization mode
+//	CAN1->FMR |= (FINIT); // Enter filter initialization mode
+//
+//	CAN1->FA1R &= ~(CAM1_FA1R_FACT0); // Deactivate filter 0
+//
+//	CAN1->FMR &= ~(FINIT); // Exit filter initialization mode
 
-	CAN1->FA1R &= ~(CAM1_FA1R_FACT0); // Deactivate filter 0
+	/* Enter filter init mode */
+	CAN1->FMR |= (1U << 0);
 
-	CAN1->FMR &= ~(FINIT); // Exit filter initialization mode
+	/* Deactivate filter 0 */
+	CAN1->FA1R &= ~(1U << 0);
+
+	/* Set filter to accept ALL messages */
+	CAN1->FS1R |= (1U << 0);   // 32-bit mode
+	CAN1->FM1R &= ~(1U << 0);  // mask mode
+
+	CAN1->sFilterRegister[0].FR1 = 0x00000000;
+	CAN1->sFilterRegister[0].FR2 = 0x00000000;
+
+	/* Assign filter to FIFO 0 */
+	CAN1->FFA1R &= ~(1U << 0);
+
+	/* Activate filter */
+	CAN1->FA1R |= (1U << 0);
+
+	/* Leave filter init mode */
+	CAN1->FMR &= ~(1U << 0);
 }
 
 uint8_t CAN_receive(void)
 {
+	CAN1->MCR &= ~SLEEP;
+	CAN1->MCR &= ~CAN_INRQ; // Ensure we're not in initialization mode
+	while(CAN1->MSR & SLAK); // Wait until not in sleep mode
+	while(CAN1->MSR & INAK); // Wait until not in initialization mode
+
     /* Wait for message */
+	printf("[CAN] Waiting for message in FIFO 0...\n\r");
     while (!(CAN1->RF0R & (1U << 0)));
+    printf("[CAN] Message received in FIFO 0\n\r");
 
     /* Read data */
     uint8_t data = CAN1->sFIFOMailBox[0].RDLR & 0xFF;

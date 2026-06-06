@@ -23,6 +23,9 @@
 #define CAN_INRQ					(1U << 0)  // Initialization Request
 #define FINIT				(1U << 0)  // Filter Initialization Mode
 #define CAM1_FA1R_FACT0				(1U << 0)  // Filter 0 activation bit
+#define SLEEP				(1U << 1)  // Sleep Mode
+#define SLAK				(1U << 1)  // Sleep Mode Request
+#define INAK				(1U << 0)  // Initialization Acknowledge
 
 
 

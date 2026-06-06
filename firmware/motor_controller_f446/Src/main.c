@@ -39,41 +39,45 @@ int compute_speed(int distance) // example function
 }
 
 int main() {
-	init_GPIOA_clock();
+	SystemInit();
 	uart2_tx_init();
 	CAN_init();
+
 	printf("[INIT] SYSTEM STARTED\n\r");
 
 //	while(1){
 //		printf("[LOOP] RUNNING...\n\r");
-//		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+//		for (volatile int i = 0; i < 2000000; i++); // Simple delay loop
 //	}
-//	uint8_t distance = 100;
+
+//	int distance = 0;
+//
+//	while(1){
+////		printf("[LOOP] RUNNING...\n\r");
+////		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
+//		DEBUG_PRINT("[SENSOR] Distance: %d\r\n", distance);
+//
+//		distance += 10;
+//
+//		if (distance > 100) {
+//			distance = 0; // Reset distance for demonstration
+//		}
+//
+//		delay(500000);
+//	}
+
+
 
 //	while (1)
 //	{
-//	    can_send(distance);
+//	    uint8_t distance = CAN_receive();
 //
-//	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
+//	    DEBUG_PRINT("[MOTOR] Received: %d\r\n", distance);
 //
-//	    distance--;
+//	    int speed = compute_speed(distance);
 //
-//	    if (distance == 0)
-//	        distance = 100;
-//
-//	    delay(500000);
+//	    DEBUG_PRINT("[MOTOR] Speed: %d\r\n", speed);
 //	}
-
-	while (1)
-	{
-	    uint8_t distance = CAN_receive();
-
-	    DEBUG_PRINT("[MOTOR] Received: %d\r\n", distance);
-
-	    int speed = compute_speed(distance);
-
-	    DEBUG_PRINT("[MOTOR] Speed: %d\r\n", speed);
-	}
 }
 
 

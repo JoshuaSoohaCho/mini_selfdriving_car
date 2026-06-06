@@ -10,8 +10,11 @@
 
 
 /* Include necessary headers */
-#include "uart_enable_l475.h"
 #include <stdio.h>
+
+#include "uart_enable_l475.h"
+#include "CAN_l475.h"
+#include "init_l475.h"
 
 
 /* Definitions */

@@ -7,6 +7,7 @@
 #include "init_f446re.h"
 
 // Initialize Clock access to GPIOA
-void init_GPIOA_clock(void) {
-	RCC->AHB1ENR |= GPIOAEN; // Enable clock for GPIOA
-}
+void SystemInit(void){
+	// Enable clock for GPIOA	RCC->AHB1ENR |= GPIOAEN;
+
+	// Additional system initialization code can be added here if needed}

@@ -21,14 +21,20 @@
 
 
 #include "main.h"
-
+#include "system_stm32l4xx.h"
 int main() {
 
+	System_Init();
 	uart1_tx_init();
+	CAN_init();
+	CAN_loopback(); // Enable loopback mode for testing
+//	CAN_loopback_off(); // Disable loopback mode for normal operation
+	CAN_start();
+	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
 	printf("[INIT] SYSTEM STARTED\n\r");
 
-	int distance = 100;
-
+//	int distance = 100;
+//
 //	while(1){
 ////		printf("[LOOP] RUNNING...\n\r");
 ////		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
@@ -42,20 +48,29 @@ int main() {
 //
 //		delay(500000);
 //	}
-	uint8_t distance = 100;
-
+//	uint8_t distance = 100;
+	uint8_t distance = 5;
+	uint8_t rx;
 	while (1)
 	{
-	    can_send(distance);
+		printf("[LOOP] RUNNING...\n\r");
+		CAN_send(&distance);
 
-	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
+		if (CAN_receive(&rx)){
+			printf("[CAN] Received: %d\r\n", rx);
+		}
+//		DEBUG_PRINT("Before Send");
+//	    CAN_send(&distance);
+//	    DEBUG_PRINT("After Send");
 
-	    distance--;
+//	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
 
-	    if (distance == 0)
-	        distance = 100;
+//	    distance--;
+//
+//	    if (distance == 0)
+//	        distance = 100;
 
-	    delay(500000);
+	    delay(5000000);
 	}
 }
 

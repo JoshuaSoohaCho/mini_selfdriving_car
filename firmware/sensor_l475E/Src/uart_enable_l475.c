@@ -21,9 +21,9 @@ int __io_putchar(int ch) {
 }
 
 void uart1_tx_init(void) {
-
-	/* Enable Clock Access to GPIOB */
-	RCC->AHB2ENR |= GPIOBEN;
+	// now initialized in SystemInit, so we can remove this line
+//	/* Enable Clock Access to GPIOB */
+//	RCC->AHB2ENR |= GPIOBEN;
 
 	/* PB6 AF Mode */
 	GPIOB->MODER &= ~(1U << 12);
