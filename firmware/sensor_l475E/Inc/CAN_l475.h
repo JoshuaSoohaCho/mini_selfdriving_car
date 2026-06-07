@@ -15,6 +15,16 @@
 
 
 /* Definitions */
+// STRUCTS
+typedef struct {
+    uint8_t node_id;
+    uint8_t command;
+    uint16_t value;
+} CAN_Message;
+
+
+
+
 
 // CAN_MCR bits
 #define CAN_INRQ			(1U << 0)  // Initialization Request
@@ -55,7 +65,7 @@
 void CAN_init(void);
 void CAN_start(void);
 void CAN_loopback(void);
-void CAN_send(uint8_t *data);
+void CAN_send_test(uint8_t *data);
 int CAN_receive(uint8_t *data);
 void CAN_loopback_off(void);
 

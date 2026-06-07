@@ -22,6 +22,7 @@
 
 #include "main.h"
 #include "system_stm32l4xx.h"
+
 int main() {
 
 	System_Init();
@@ -37,7 +38,7 @@ int main() {
 	uint8_t distance = 5;
 
 	while (1){
-		CAN_send(&distance);
+		CAN_send_test(&distance);
 		printf("[L475] Sent: %d\r\n", distance);
 		delay(5000000);
 	}

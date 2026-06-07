@@ -14,6 +14,13 @@
 #include "stm32f4xx.h"
 
 /* Definitions */
+// STRUCTS
+typedef struct {
+	uint8_t node_id;
+	uint8_t command;
+	uint16_t value;
+} CAN_Message;
+
 
 // CAN_MCR bits
 #define CAN_INRQ			(1U << 0)  // Initialization Request
@@ -28,7 +35,7 @@
 #define TME0				(1U << 26) // Transmit Mailbox Empty bit for mailbox 0
 
 // CAN_RF0R bits
-#define FMP0				(1U << 0)  // FIFO 0 message pending bit
+#define FMP0				(0x3)  		// FIFO 0 message pending bits 0-1
 #define RFOM0				(1U << 5)  // Release FIFO 0 output mailbox bit
 
 // CAN_BTR bits
@@ -55,7 +62,7 @@ int CAN_receive(uint8_t *data);
 void CAN_start(void);
 void CAN_loopback(void);
 void CAN_loopback_off(void);
-void CAN_send(uint8_t *data); // uint8_t data
+void CAN_send_test(uint8_t *data); // uint8_t data
 
 
 #endif /* CAN_F446RE_H_ */

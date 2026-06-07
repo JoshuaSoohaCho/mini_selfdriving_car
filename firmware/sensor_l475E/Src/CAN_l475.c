@@ -96,11 +96,25 @@ void CAN_loopback_off(void) {
 	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
 }
 
-void CAN_send(uint8_t *data) { // uint8_t data
+void CAN_send_test(uint8_t *data) { // uint8_t data
 	while (!(CAN1->TSR & (TME0))); // Wait until a transmit mailbox is empty
 	CAN1->sTxMailBox[0].TIR = (0x007 << 21); // Standard ID (0x007)
 	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
 	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
+
+	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission
+}
+
+void CAN_send_message(CAN_Message *msg){
+	while(!(CAN1->TSR & (TME0))); // Wait until a transmit mailbox is empty
+
+	CAN1->sTxMailBox[0].TIR = (0x100 << 21); // Standard ID (0x100)
+
+	CAN1->sTxMailBox[0].TDTR = 4; // Data length (4 bytes)
+
+	CAN1->sTxMailBox[0].TDLR =		(msg->node_id << 0) |
+							 	 	(msg->command << 8) |
+									(msg->value << 16 ); // Load data into the mailbox
 
 	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission
 }
