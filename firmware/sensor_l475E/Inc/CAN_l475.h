@@ -15,13 +15,28 @@
 
 
 /* Definitions */
-// APB1 peripheral clock enable register 1 (RCC_APB1ENR1) bits
-#define CAN1EN			(1U << 25)  // CAN1 clock enable
 
 // CAN_MCR bits
 #define CAN_INRQ			(1U << 0)  // Initialization Request
-#define NART				(1U << 4)  // No Automatic Retransmission
 #define SLEEP				(1U << 1)  // Sleep Mode
+#define NART				(1U << 4)  // No Automatic Retransmission
+
+// CAN_MSR bits
+#define INAK				(1U << 0)  // Initialization Acknowledge
+#define SLAK				(1U << 1)  // Sleep Mode Request
+
+// CAN_TSR bits
+#define TME0				(1U << 26) // Transmit Mailbox Empty bit for mailbox 0
+
+// CAN_RF0R bits
+#define FMP0				(1U << 0)  // FIFO 0 message pending bit
+#define RFOM0				(1U << 5)  // Release FIFO 0 output mailbox bit
+
+// CAN_BTR bits
+#define LBKM				(1U << 30) // Loopback Mode bit in CAN_BTR
+
+// CAN sTxMailBox TIR Bits
+#define TXRQ				(1U << 0)  // Transmit Request bit in TIR
 
 // CAN_FMR bits
 #define FINIT				(1U << 0)  // Filter Initialization Mode
@@ -35,30 +50,14 @@
 // CAN_FA1R bits
 #define FACT0				(1U << 0)  // Filter 0 activation bit
 
-// CAN_MSR bits
-#define SLAK				(1U << 1)  // Sleep Mode Request
-#define INAK				(1U << 0)  // Initialization Acknowledge
-
-// CAN_BTR bits
-#define LBKM				(1U << 30) // Loopback Mode bit in CAN_BTR
-
-// CAN_TSR bits
-#define TME0				(1U << 26) // Transmit Mailbox Empty bit for mailbox 0
-
-// CAN sTxMailBox TIR Bits
-#define TXRQ				(1U << 0)  // Transmit Request bit in TIR
-
-// CAN_RF0R bits
-#define FMP0				(1U << 0)  // FIFO 0 message pending bit
-#define RFOM0				(1U << 5)  // Release FIFO 0 output mailbox bit
 
 /* Function prototypes */
 void CAN_init(void);
 void CAN_start(void);
 void CAN_loopback(void);
-
 void CAN_send(uint8_t *data);
 int CAN_receive(uint8_t *data);
+void CAN_loopback_off(void);
 
 
 #endif /* CAN_L475_H_ */

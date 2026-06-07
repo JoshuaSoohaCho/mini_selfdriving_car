@@ -13,6 +13,9 @@ void System_Init(void) {
 	// Enable clock for GPIOB (used for UART and CAN)
 	RCC->AHB2ENR |= GPIOBEN;
 
+	// Enable CLock for CAN1
+	RCC->APB1ENR1 |= CAN1EN;
+
 	// Additional system initialization code can be added here if needed
 	RCC->CR |= HSION;              // Enable HSI
 	while (!(RCC->CR & HSIRDY));   // Wait ready

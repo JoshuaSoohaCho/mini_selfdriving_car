@@ -10,8 +10,11 @@
 void SystemInit(void){
 	// Enable clock for GPIOA	RCC->AHB1ENR |= GPIOAEN;
 
+	// Enable clock for CAN peripheral
+	RCC->APB1ENR |= CAN1EN;
+
 	// Additional system initialization code can be added here if needed
-	RCC->CR |= (1 << 0) // Enable HSI
+	RCC->CR |= (1 << 0); // Enable HSI
 	while(!(RCC->CR & (1 << 1)));
 
 	RCC->CFGR &= ~(1 << 0);

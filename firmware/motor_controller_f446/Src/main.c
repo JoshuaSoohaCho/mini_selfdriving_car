@@ -46,7 +46,6 @@ int main() {
 	// CAN_loopback_off(); // Disable loopback mode for normal operation
 	CAN_start();
 	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
-
 	printf("[INIT] SYSTEM STARTED\n\r");
 
 //	while(1){
@@ -82,6 +81,29 @@ int main() {
 //
 //	    DEBUG_PRINT("[MOTOR] Speed: %d\r\n", speed);
 //	}
+	uint8_t distance = 5;
+	uint8_t rx;
+	while (1)
+	{
+		printf("[LOOP] RUNNING...\n\r");
+		CAN_send(&distance);
+
+		if (CAN_receive(&rx)){
+			printf("[CAN] Received: %d\r\n", rx);
+		}
+//		DEBUG_PRINT("Before Send");
+//	    CAN_send(&distance);
+//	    DEBUG_PRINT("After Send");
+
+//	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
+
+//	    distance--;
+//
+//	    if (distance == 0)
+//	        distance = 100;
+
+		delay(5000000);
+	}
 }
 
 

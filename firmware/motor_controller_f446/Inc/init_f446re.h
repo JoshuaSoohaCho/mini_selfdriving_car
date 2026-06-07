@@ -13,6 +13,7 @@
 
 /* DEFINITIONS */
 #define GPIOAEN 					(1U<<0)
+#define CAN1EN						(1U << 25) // CAN1 clock enable
 
 /* FUNCTION PROTOTYPES */
 void SystemInit(void);

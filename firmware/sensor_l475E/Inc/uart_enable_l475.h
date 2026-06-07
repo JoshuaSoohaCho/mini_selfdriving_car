@@ -14,7 +14,6 @@
 #include "stm32l4xx.h"
 
 /****************** DEFINITIONS ******************/
-#define GPIOBEN 					(1U<<1)
 #define UART1EN						(1U<<14)
 
 #define SYS_FREQ 					16000000 // 4 MHz
