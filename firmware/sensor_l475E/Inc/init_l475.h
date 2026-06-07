@@ -14,6 +14,10 @@
 /* Definitions */
 #define GPIOBEN 					(1U<<1)
 
+#define HSION 						(1U << 8)  // HSI clock enable
+#define HSIRDY 						(1U << 10) // HSI clock ready flag
+#define HSI16_SEL 					(1U << 0)  // HSI16 selected as system clock
+
 /* Function Prototypes */
 void System_Init(void);
 

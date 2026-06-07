@@ -42,6 +42,10 @@ int main() {
 	SystemInit();
 	uart2_tx_init();
 	CAN_init();
+	CAN_loopback(); // Enable loopback mode for testing
+	// CAN_loopback_off(); // Disable loopback mode for normal operation
+	CAN_start();
+	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
 
 	printf("[INIT] SYSTEM STARTED\n\r");
 

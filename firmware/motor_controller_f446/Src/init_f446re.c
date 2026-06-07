@@ -10,4 +10,9 @@
 void SystemInit(void){
 	// Enable clock for GPIOA	RCC->AHB1ENR |= GPIOAEN;
 
-	// Additional system initialization code can be added here if needed}
+	// Additional system initialization code can be added here if needed
+	RCC->CR |= (1 << 0) // Enable HSI
+	while(!(RCC->CR & (1 << 1)));
+
+	RCC->CFGR &= ~(1 << 0);
+	RCC->CFGR &= ~(1 << 1); // Select HSI as SYSCLK}

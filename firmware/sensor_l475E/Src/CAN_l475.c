@@ -64,12 +64,12 @@ void CAN_init(void) { // switch to pb8 and pb9 for can and honestly
 
 	CAN1->FA1R &= ~(FACT0); // Deactivate filter 0
 
-	CAN1->FS1R |= (1 << 0); // Set filter 0 to mask mode // FSC0
+	CAN1->FS1R |= FSC0; // Set filter 0 to mask mode // FSC0
 
 	CAN1->sFilterRegister[0].FR1 = 0x00000000; // Filter ID (accept all)
 	CAN1->sFilterRegister[0].FR2 = 0x00000000; // Filter mask (accept all)
 
-	CAN1->FFA1R &= ~(1 << 0); // Activate filter 0 // FFA0
+	CAN1->FFA1R &= ~FFA0; // Activate filter 0 // FFA0
 
 	CAN1->FA1R |= FACT0; // Activate filter 0
 
@@ -90,7 +90,7 @@ void CAN_loopback(void) {
 	CAN1->MCR |= CAN_INRQ; // Enter initialization mode
 	while (!(CAN1->MSR & INAK)); // Wait until initialization mode is entered
 
-	CAN1->BTR |= (1 << 30); // Set LBKM bit for loopback mode
+	CAN1->BTR |= LBKM; // Set LBKM bit for loopback mode
 
 	CAN1->MCR &= ~CAN_INRQ; // Exit initialization mode
 	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
@@ -101,108 +101,27 @@ void CAN_loopback_off(void) {
 	CAN1->MCR |= CAN_INRQ; // Enter initialization mode
 	while (!(CAN1->MSR & INAK)); // Wait until initialization mode is entered
 
-	CAN1->BTR &= ~(1 << 30); // Clear LBKM bit to disable loopback mode
+	CAN1->BTR &= ~LBKM; // Clear LBKM bit to disable loopback mode
 
 	CAN1->MCR &= ~CAN_INRQ; // Exit initialization mode
 	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
 }
 
 void CAN_send(uint8_t *data) { // uint8_t data
-//	CAN1->MCR &= ~SLEEP;
-//	CAN1->MCR &= ~CAN_INRQ; // Ensure we're not in initialization mode
-//	while(CAN1->MSR & SLAK); // Wait until not in sleep mode
-//	while(CAN1->MSR & INAK); // Wait until not in initialization mode
-
-//	CAN1->sTxMailBox[0].TDHR &= ~0xFFFFFFFF; // Clear high data register
-//	CAN1->sTxMailBox[0].TDLR &= ~0xFFFFFFFF; // Clear low data register
-//	CAN1->sTxMailBox[0].TDTR &= ~0xFFFFFFFF; // Clear data length register
-//	CAN1->sTxMailBox[0].TIR &= ~0xFFFFFFFF; // Clear identifier register
-	while (!(CAN1->TSR & (1U << 26))); // Wait until a transmit mailbox is empty
+	while (!(CAN1->TSR & (TME0))); // Wait until a transmit mailbox is empty
 	CAN1->sTxMailBox[0].TIR = (0x007 << 21); // Standard ID (0x007)
 	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
 	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
 
-//	CAN1->sTxMailBox[0].TIR = (1 << 7) | (0x007);
-
-//	CAN1->sTxMailBox[0].TIR &= ~(1 << 2); // standard ID (IDE)
-//
-//	CAN1->sTxMailBox[0].TIR &= ~(1 << 1); // Data frame (RTR)
-
-//	CAN1->sTxMailBox[0].TDTR = 1;
-//	CAN1->sTxMailBox[0].TDTR &= ~(1 << 8);
-
-
-
-
-//	while (!(CAN1->TSR & (1U << 26))); // Wait until a transmit mailbox is empty
-//	printf("[CAN] Transmit mailbox is empty, preparing to send data...\n\r");
-
-//	CAN1->sTxMailBox[0].TIR = (0x100 << 21); // Standard ID (0x100)
-
-//	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
-
-//	CAN1->sTxMailBox[0].TDLR = data; // Load data into the mailbox
-
-
-
-
-//	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
-//
-	CAN1->sTxMailBox[0].TIR |= (1U << 0); // Request transmission
+	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission
 	printf("ESR: 0x%08X\n\r", CAN1->ESR);
 
-
-//	DEBUG_PRINT("BEFORE TRANSMISSION \n\r");
-//	int timeout = 1000000; // Arbitrary timeout value to prevent infinite loop
-//	while ((CAN1->sTxMailBox[0].TIR & (1 << 0)) && timeout --){}
-//	if (timeout <=0){
-//		DEBUG_PRINT("[CAN] ERROR: STUCK WAITING (NO ACK) \n\r");
-//	}
-
-//	DEBUG_PRINT("[CAN] Transmission requested, waiting for completion...\n\r");
-//	printf("TIR: 0x%08X\n\r", CAN1->sTxMailBox[0].TIR);
-
-
-	 /* Wait for completion (success OR error) */
-//	while (!(CAN1->TSR & ((1U << 0) | (1U << 3))))
-//	{
-//		// wait for TXOK0 or TERR0
-//	}
-
-
-
-
-
-//	if (CAN1->TSR & (1U << 0))
-//	{
-//		DEBUG_PRINT("[CAN] SUCCESS (ACK received)\r\n");
-//	}
-//
-//	if (CAN1->TSR & (1U << 3))
-//	{
-//		DEBUG_PRINT("[CAN] ERROR (NO ACK)\r\n");
-//	}
-
-
-
-
-
-
-
-
-//
-//	DEBUG_PRINT("After Send\r\n");
-//
-//	/* Clear flags */
-//	CAN1->TSR |= (1U << 0);
-//	CAN1->TSR |= (1U << 3);
-//	printf("BTR: 0x%08X\n\r", CAN1->BTR);
 }
 
 int CAN_receive(uint8_t *data){
-	if(CAN1->RF0R & (1 << 0)){
+	if(CAN1->RF0R & FMP0){
 		*data = CAN1->sFIFOMailBox[0].RDLR & 0xFF; // Read received data
-		CAN1->RF0R |= (1 << 5); // Release FIFO 0
+		CAN1->RF0R |= (RFOM0); // Release FIFO 0
 		return 1;
 	}
 	return 0;

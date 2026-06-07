@@ -33,6 +33,10 @@
 /* FUNCTION PROTOTYPES */
 void CAN_init(void);
 uint8_t CAN_receive(void);
+void CAN_start(void);
+void CAN_loopback(void);
+void CAN_loopback_off(void);
+void CAN_send(uint8_t *data); // uint8_t data
 
 
 #endif /* CAN_F446RE_H_ */

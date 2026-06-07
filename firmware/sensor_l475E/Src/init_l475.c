@@ -14,9 +14,9 @@ void System_Init(void) {
 	RCC->AHB2ENR |= GPIOBEN;
 
 	// Additional system initialization code can be added here if needed
-	RCC->CR |= (1 << 8);              // Enable HSI
-	while (!(RCC->CR & (1 << 10)));   // Wait ready
+	RCC->CR |= HSION;              // Enable HSI
+	while (!(RCC->CR & HSIRDY));   // Wait ready
 
-	RCC->CFGR |= (1 << 0);           // Select HSI as SYSCLK
+	RCC->CFGR |= HSI16_SEL;           // Select HSI as SYSCLK
 }
 

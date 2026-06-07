@@ -80,6 +80,34 @@ void CAN_init(void) {
 	CAN1->FMR &= ~(1U << 0);
 }
 
+void CAN_start(void) {
+	CAN1->MCR &= ~SLEEP; // Ensure we're not in sleep mode
+	CAN1->MCR &= ~CAN_INRQ; // Ensure we're not in initialization mode
+	while (CAN1->MSR & SLAK); // Wait until not in sleep mode
+	while (CAN1->MSR & INAK); // Wait until not in initialization mode
+}
+
+void CAN_loopback(void) {
+	CAN1->MCR |= CAN_INRQ; // Enter initialization mode
+	while (!(CAN1->MSR & INAK)); // Wait until initialization mode is entered
+
+	CAN1->BTR |= (1 << 30); // Set LBKM bit for loopback mode
+
+	CAN1->MCR &= ~CAN_INRQ; // Exit initialization mode
+	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
+}
+
+void CAN_loopback_off(void) {
+	CAN1->MCR |= CAN_INRQ; // Enter initialization mode
+	while (!(CAN1->MSR & INAK)); // Wait until initialization mode is entered
+
+	CAN1->BTR &= ~(1 << 30); // Clear LBKM bit to disable loopback mode
+
+	CAN1->MCR &= ~CAN_INRQ; // Exit initialization mode
+	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
+}
+
+
 uint8_t CAN_receive(void)
 {
 	CAN1->MCR &= ~SLEEP;
@@ -100,3 +128,5 @@ uint8_t CAN_receive(void)
 
     return data;
 }
+
+void CAN_send(uint8_t *data) {	CAN1->MCR &= ~SLEEP;	CAN1->MCR &= ~CAN_INRQ; // Ensure we're not in initialization mode	while(CAN1->MSR & SLAK); // Wait until not in sleep mode	while(CAN1->MSR & INAK); // Wait until not in initialization mode	CAN1->sTxMailBox[0].TIR = 0x00000000; // Standard ID, no RTR	CAN1->sTxMailBox[0].TDTR = 1; // Data length = 1 byte	CAN1->sTxMailBox[0].TDLR = *data; // Load data into mailbox	CAN1->sTxMailBox[0].TIR |= (1U << 0); // Request transmission}
