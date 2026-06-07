@@ -64,7 +64,6 @@ void CAN_init(void) {
 	CAN1->FA1R |= FACT0; // Activate filter 0
 
 	CAN1->FMR &= ~(FINIT); // Exit filter initialization mode
-	printf("CAN Complete\r\n");
 }
 
 void CAN_start(void) {
@@ -104,7 +103,6 @@ void CAN_send(uint8_t *data) { // uint8_t data
 	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
 
 	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission
-	printf("ESR: 0x%08X\n\r", CAN1->ESR);
 }
 
 int CAN_receive(uint8_t *data){

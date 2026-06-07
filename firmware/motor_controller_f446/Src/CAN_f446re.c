@@ -66,7 +66,6 @@ void CAN_init(void) {
 	CAN1->FA1R |= FACT0; // Activate filter 0
 
 	CAN1->FMR &= ~(FINIT); // Exit filter initialization mode
-	printf("CAN Complete\r\n");
 }
 
 void CAN_start(void) {
@@ -96,6 +95,12 @@ void CAN_loopback_off(void) {
 	while (CAN1->MSR & INAK); // Wait until initialization mode is exited
 }
 
+void CAN_send(uint8_t *data) {	while (!(CAN1->TSR & (TME0))); // Wait until a transmit mailbox is empty
+	CAN1->sTxMailBox[0].TIR = (0x007 << 21); // Standard ID (0x007)
+	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
+	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
+
+	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission}
 
 int CAN_receive(uint8_t *data)
 {
@@ -106,11 +111,3 @@ int CAN_receive(uint8_t *data)
 	}
 	return 0;
 }
-
-void CAN_send(uint8_t *data) {	while (!(CAN1->TSR & (TME0))); // Wait until a transmit mailbox is empty
-	CAN1->sTxMailBox[0].TIR = (0x007 << 21); // Standard ID (0x007)
-	CAN1->sTxMailBox[0].TDTR = 1; // Data length (1 byte)
-	CAN1->sTxMailBox[0].TDLR = data[0] << 0; // Load data into the mailbox
-
-	CAN1->sTxMailBox[0].TIR |= (TXRQ); // Request transmission
-	printf("ESR: 0x%08X\n\r", CAN1->ESR);}

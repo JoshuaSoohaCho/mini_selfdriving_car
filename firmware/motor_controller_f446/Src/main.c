@@ -42,68 +42,30 @@ int main() {
 	SystemInit();
 	uart2_tx_init();
 	CAN_init();
-	CAN_loopback(); // Enable loopback mode for testing
-	// CAN_loopback_off(); // Disable loopback mode for normal operation
+//	CAN_loopback(); // Enable loopback mode for testing
+	CAN_loopback_off(); // Disable loopback mode for normal operation
 	CAN_start();
 	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
 	printf("[INIT] SYSTEM STARTED\n\r");
+	uint8_t distance;
+	while(1){
+		if (CAN_receive(&distance)){
+			printf("[F4] RX: %d\r\n", distance);
+		}
+	}
 
-//	while(1){
-//		printf("[LOOP] RUNNING...\n\r");
-//		for (volatile int i = 0; i < 2000000; i++); // Simple delay loop
-//	}
-
-//	int distance = 0;
-//
-//	while(1){
-////		printf("[LOOP] RUNNING...\n\r");
-////		for (volatile int i = 0; i < 10000000; i++); // Simple delay loop
-//		DEBUG_PRINT("[SENSOR] Distance: %d\r\n", distance);
-//
-//		distance += 10;
-//
-//		if (distance > 100) {
-//			distance = 0; // Reset distance for demonstration
-//		}
-//
-//		delay(500000);
-//	}
-
-
-
+//	uint8_t distance = 5;
+//	uint8_t rx;
 //	while (1)
 //	{
-//	    uint8_t distance = CAN_receive();
+//		printf("[LOOP] RUNNING...\n\r");
+//		CAN_send(&distance);
 //
-//	    DEBUG_PRINT("[MOTOR] Received: %d\r\n", distance);
-//
-//	    int speed = compute_speed(distance);
-//
-//	    DEBUG_PRINT("[MOTOR] Speed: %d\r\n", speed);
+//		if (CAN_receive(&rx)){
+//			printf("[CAN] Received: %d\r\n", rx);
+//		}
+//		delay(5000000);
 //	}
-	uint8_t distance = 5;
-	uint8_t rx;
-	while (1)
-	{
-		printf("[LOOP] RUNNING...\n\r");
-		CAN_send(&distance);
-
-		if (CAN_receive(&rx)){
-			printf("[CAN] Received: %d\r\n", rx);
-		}
-//		DEBUG_PRINT("Before Send");
-//	    CAN_send(&distance);
-//	    DEBUG_PRINT("After Send");
-
-//	    DEBUG_PRINT("[SENSOR] Sent: %d\r\n", distance);
-
-//	    distance--;
-//
-//	    if (distance == 0)
-//	        distance = 100;
-
-		delay(5000000);
-	}
 }
 
 
