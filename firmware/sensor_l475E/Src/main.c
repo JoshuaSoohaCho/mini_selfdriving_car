@@ -27,21 +27,33 @@ int main() {
 
 	System_Init();
 	uart1_tx_init();
-	CAN_init();
+//	CAN_init();
 //	CAN_loopback(); // Enable loopback mode for testing
-	CAN_loopback_off(); // Disable loopback mode for normal operation
-	CAN_start();
+//	CAN_loopback_off(); // Disable loopback mode for normal operation
+//	CAN_start();
+	i2c_init();
 	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
 	printf("[INIT] SYSTEM STARTED\n\r");
 	printf("[L475] STARTED...\n\r");
-
-	uint8_t distance = 5;
-
-	while (1){
-		CAN_send_test(&distance);
-		printf("[L475] Sent: %d\r\n", distance);
+	while(1){
+		i2c_bus_scan();
 		delay(5000000);
 	}
+//	while(1){
+//		uint8_t id = i2c_read_reg(0x29, 0xC0);
+//		printf("ID: 0x%X\n", id);
+//	}
+
+
+
+
+//	uint8_t distance = 5;
+
+//	while (1){
+//		CAN_send_test(&distance);
+//		printf("[L475] Sent: %d\r\n", distance);
+//		delay(5000000);
+//	}
 
 //	uint8_t distance = 5;
 //	uint8_t rx;

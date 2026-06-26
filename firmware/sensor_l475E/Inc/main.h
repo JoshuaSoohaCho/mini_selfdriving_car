@@ -15,6 +15,7 @@
 #include "uart_enable_l475.h"
 #include "CAN_l475.h"
 #include "init_l475.h"
+#include "i2c_l475.h"
 
 
 /* Definitions */
