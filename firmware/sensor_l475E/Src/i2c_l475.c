@@ -41,6 +41,9 @@ void i2c_init(void) {
 	// Disable I2C first to configure timing
 	I2C3->CR1 &= ~PE;
 
+
+//	I2C3->CR1 |= (NACKIE);
+
 	I2C3->TIMINGR = 0x20303E5D; // 16Mhz (HSI), 100 kHz
 
 	// Enable I2C
@@ -102,38 +105,67 @@ uint8_t i2c_read_reg(uint8_t dev_addr, uint8_t reg){
 	return data;
 }
 
+
 void i2c_bus_scan(void)
 {
     printf("Scanning I2C bus...\n\r");
 
     for (uint8_t addr = 1; addr < 128; addr++)
     {
-        // Wait until not busy
-        while (I2C3->ISR & BUSY);
+        // Wait until bus is free
+        int timeout = 100000;
+        while ((I2C3->ISR & BUSY) && timeout--);
 
-        // Configure transfer (just address, no data)
+        if (timeout <= 0)
+        {
+            printf("BUS STUCK, resetting...\n\r");
+
+            // Reset I2C
+            I2C3->CR1 &= ~PE;
+            I2C3->CR1 |= PE;
+
+            continue;
+        }
+
+        // Clear flags
+        I2C3->ICR |= STOPCF | NACKCF;
+
+        // Setup transfer (WRITE, 1 byte but we won't send it)
         I2C3->CR2 =
-            (addr << 1) |          // 7-bit address
-            (0 << 16)  |           // 0 bytes
-            START |
-            AUTOEND;       // auto STOP
+            (addr << 1) |    // address
+            (1 << 16) |      // NBYTES = 1
+            START;
 
-        // Wait until STOP flag is set OR NACK
-        while (!(I2C3->ISR & (STOPF | NACKF)));
+        // Wait for either TXIS or NACK
+        timeout = 100000;
+        while (!(I2C3->ISR & (TXIS | NACKF)) && timeout--);
+
+        if (timeout <= 0)
+        {
+            printf("Timeout at 0x%X\n\r", addr);
+            continue;
+        }
 
         if (I2C3->ISR & NACKF)
         {
-            // No device responded
-            I2C3->ICR |= NACKCF; // clear NACK
+            // No device
+            I2C3->ICR |= NACKCF;
         }
-        else
+        else if (I2C3->ISR & TXIS)
         {
-            // Device responded (ACK)
+            // Device Acked
             printf("Found device at 0x%X\n\r", addr);
+            I2C3->TXDR = 0x00;
         }
 
-        // Clear STOP flag
-        I2C3->ICR |= I2C_ICR_STOPCF;
+        // Generate STOP manually
+        I2C3->CR2 |= STOP;
+
+        // Wait for STOP
+        timeout = 100000;
+        while (!(I2C3->ISR & STOPF) && timeout--);
+
+        I2C3->ICR |= STOPCF;
     }
 
     printf("Scan complete\n\r");

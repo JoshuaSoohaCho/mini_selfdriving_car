@@ -18,6 +18,7 @@
 
 // CR1 Bits
 #define PE						(1 << 0)
+#define NACKIE					(1 << 4)
 
 // ISR Bits
 #define TXIS					(1 << 1)
