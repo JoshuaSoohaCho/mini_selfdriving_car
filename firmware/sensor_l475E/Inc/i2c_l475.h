@@ -38,11 +38,18 @@
 #define NACKCF					(1 << 4)
 #define STOPCF					(1 << 5)
 
+// I2C Addresses
+#define VL53_ADDR				0x29
 
 
 void i2c_init(void);
+void i2c_reset(void);
 void i2c_write_reg(uint8_t dev_addr, uint8_t reg, uint8_t data);
+void i2c_write(uint8_t dev_addr, uint8_t data);
 uint8_t i2c_read_reg(uint8_t dev_addr, uint8_t reg);
 void i2c_bus_scan(void);
+uint16_t bh1750_read(void);
+void VL53L0X_Init(void);
+uint16_t VL53L0X_ReadDistance(void);
 
 #endif /* I2C_L475_H_ */

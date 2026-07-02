@@ -51,58 +51,110 @@ void i2c_init(void) {
 	printf("initialization complete.\n\r");
 }
 
-void i2c_write_reg(uint8_t dev_addr, uint8_t reg, uint8_t data){
-	// wait for busy
-	while(I2C3->ISR & BUSY){}
+void i2c_write_reg(uint8_t dev_addr, uint8_t reg, uint8_t data)
+{
+    while (I2C3->ISR & BUSY);
 
-	I2C3->ICR |= STOPCF | NACKCF;
+    I2C3->ICR |= STOPCF | NACKCF;
 
-	I2C3->CR2 = (dev_addr << 1) | (2 << 16) | START;
+    I2C3->CR2 =
+        (dev_addr << 1) |
+        (2 << 16) |     // reg + data
+        START |
+        AUTOEND;
 
-	// Wait TXIS (ready to send)
-	while(!(I2C3->ISR & TXIS)){}
+    int timeout = 100000;
 
-	I2C3->TXDR = reg;
+    while (!(I2C3->ISR & TXIS) && !(I2C3->ISR & NACKF) && timeout--);
 
-	while(!(I2C3->ISR &TXIS)){}
+    if (I2C3->ISR & NACKF)
+    {
+        printf("NACK!\n\r");
+        I2C3->ICR |= NACKCF;
+        return;
+    }
 
-	I2C3->TXDR = data;
+    I2C3->TXDR = reg;
 
-	while(!(I2C3->ISR & STOPF)){}
+    while (!(I2C3->ISR & TXIS));
+    I2C3->TXDR = data;
 
-//	I2C3->CR2 |= STOP;
+    while (!(I2C3->ISR & STOPF));
+    I2C3->ICR |= STOPCF;
 }
 
-uint8_t i2c_read_reg(uint8_t dev_addr, uint8_t reg){
-	printf("read_reg()\n\r");
-	uint8_t data;
+void i2c_reset(void){
+	I2C3->CR1 &= ~PE;
+	delay(1000);
+	I2C3->CR1 |= PE;
+	I2C3->ICR |= STOPCF | NACKCF;
+}
 
 
-	while(I2C3->ISR & BUSY){}
-	printf("NOT BUSY\n\r");
+void i2c_write(uint8_t dev_addr, uint8_t data)
+{
+    int timeout = 100000;
+    while ((I2C3->ISR & BUSY) && timeout--);
 
-	I2C3->CR2 = (dev_addr << 1) | (1 << 16) | START;
+    if (timeout <= 0)
+    {
+        printf("BUSY stuck\n\r");
+        I2C3->CR1 &= ~PE;
+        I2C3->CR1 |= PE;
+        return;
+    }
 
-	while(!(I2C3->ISR & TXIS)) {}
-	printf("TXIS\n\r");
+    I2C3->ICR |= STOPCF | NACKCF;
 
-	I2C3->TXDR = reg;
+    I2C3->CR2 =
+        (dev_addr << 1) |
+        (1 << 16) |
+        START |
+        AUTOEND;
 
-	while(!(I2C3->ISR & TC)){}
-	printf("TC\n\r");
+    while (!(I2C3->ISR & TXIS));
+    I2C3->TXDR = data;
 
-	I2C3->CR2 = (dev_addr << 1) | (1 << 16) | START;
-	I2C3->CR2 |= RD_WRN;
+    while (!(I2C3->ISR & STOPF));
+    I2C3->ICR |= STOPCF;
+}
 
-	while(!(I2C3->ISR & RXNE)){}
-	printf("RXNE\n\r");
-	data = I2C3->RXDR;
+uint8_t i2c_read_reg(uint8_t dev_addr, uint8_t reg)
+{
+    uint8_t data;
 
-	while(!(I2C3->ISR & TC)) {}
-	printf("TC_2\n\r");
-	I2C3->CR2 |= STOP;
+    // Wait until bus free
+    while (I2C3->ISR & BUSY);
 
-	return data;
+    // -------- STEP 1: WRITE REGISTER ADDRESS --------
+    I2C3->CR2 =
+        (dev_addr << 1) |
+        (1 << 16) |   // 1 byte
+        START;
+
+    while (!(I2C3->ISR & TXIS));
+
+    I2C3->TXDR = reg;
+
+    while (!(I2C3->ISR & TC));
+
+    // -------- STEP 2: REPEATED START READ --------
+    I2C3->CR2 =
+        (dev_addr << 1) |
+        (1 << 16) |   // 1 byte
+        RD_WRN |      // ✅ NOW correct
+        START |
+        AUTOEND;
+
+    while (!(I2C3->ISR & RXNE));
+
+    data = I2C3->RXDR;
+
+    while (!(I2C3->ISR & STOPF));
+
+    I2C3->ICR |= STOPCF | NACKCF;
+
+    return data;
 }
 
 
@@ -170,3 +222,61 @@ void i2c_bus_scan(void)
 
     printf("Scan complete\n\r");
 }
+
+uint16_t bh1750_read(void)
+{
+    uint8_t high, low;
+
+    while (I2C3->ISR & BUSY);
+
+    I2C3->CR2 =
+        (0x23 << 1) |
+        (2 << 16) |   // 🔥 2 bytes
+        START |
+        RD_WRN |      // READ
+        AUTOEND;
+
+    // Wait for first byte
+    while (!(I2C3->ISR & RXNE));
+    high = I2C3->RXDR;
+
+    // Wait for second byte
+    while (!(I2C3->ISR & RXNE));
+    low = I2C3->RXDR;
+
+    // Combine
+    uint16_t value = (high << 8) | low;
+
+    return value;
+}
+
+void VL53L0X_Init(void)
+{
+    // Basic reset sequence
+    i2c_write_reg(VL53_ADDR, 0x88, 0x00);
+
+    i2c_write_reg(VL53_ADDR, 0x80, 0x01);
+    i2c_write_reg(VL53_ADDR, 0xFF, 0x01);
+    i2c_write_reg(VL53_ADDR, 0x00, 0x00);
+
+
+    i2c_write_reg(VL53_ADDR, 0x00, 0x01);
+    i2c_write_reg(VL53_ADDR, 0xFF, 0x00);
+    i2c_write_reg(VL53_ADDR, 0x80, 0x00);
+
+    i2c_write_reg(VL53_ADDR, 0x00, 0x02);
+
+    printf("VL530X init complete...\n\r");
+    delay(100000); // small delay
+}
+
+uint16_t VL53L0X_ReadDistance(void)
+{
+    uint8_t high = i2c_read_reg(VL53_ADDR, 0x1E);
+    uint8_t low  = i2c_read_reg(VL53_ADDR, 0x1F);
+
+    uint16_t distance = (high << 8) | low;
+
+    return distance;
+}
+

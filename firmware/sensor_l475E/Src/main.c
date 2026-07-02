@@ -24,7 +24,7 @@
 #include "system_stm32l4xx.h"
 
 int main() {
-
+	printf("[INIT] SYSTEM STARTED\n\r");
 	System_Init();
 	uart1_tx_init();
 //	CAN_init();
@@ -33,16 +33,50 @@ int main() {
 //	CAN_start();
 	i2c_init();
 	delay(1000000); // Short delay to ensure everything is initialized before starting the main loop
-	printf("[INIT] SYSTEM STARTED\n\r");
 	printf("[L475] STARTED...\n\r");
-	while(1){
-		i2c_bus_scan();
-		delay(5000000);
-	}
-//	while(1){
-//		uint8_t id = i2c_read_reg(0x29, 0xC0);
-//		printf("ID: 0x%X\n", id);
+	printf("[L475] READING BH1750...\n\r");
+
+	printf("RESET I2C:\n\r");
+	i2c_reset();
+
+	/* BH1750*/
+//	i2c_write(0x23, 0x10);
+//
+//	delay(2000000); // wait for first measurement
+//
+//	while (1)
+//	{
+//	    uint16_t raw = bh1750_read();
+////	    float lux = raw / 1.2;
+//
+//	    printf("Lux: %d\n\r", raw);
+//
+//	    delay(1000000);
 //	}
+
+
+
+
+	printf("VL53 INIT...\n\r");
+	VL53L0X_Init();
+
+	while (1)
+	{
+		uint16_t dist = VL53L0X_ReadDistance();
+
+		printf("Distance: %d mm\n\r", dist);
+
+		delay(500000);
+	}
+
+
+	/* i2c bus scan */
+//	while(1){
+//		i2c_bus_scan();
+//		delay(5000000);
+//	}
+
+
 
 
 
